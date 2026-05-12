@@ -300,6 +300,27 @@
     text-transform: uppercase;
     margin-bottom: 10px;
   }
+
+  /* ── Footer responsive ── */
+  .footer-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+    margin-bottom: 40px;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 767px) {
+    .footer-top {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 24px;
+    }
+    .map-iframe { height: 260px; }
+  }
 </style>
 </head>
 <body>
@@ -410,58 +431,180 @@ const GoogleIcon = () => (
 ══════════════════════════════════════ */
 function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen]         = useState(false);
+
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', fn, { passive: true });
     return () => window.removeEventListener('scroll', fn);
   }, []);
 
+  /* Bloquea el scroll del body mientras el menú móvil está abierto */
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [open]);
+
+  const navLinks = [
+    { label: 'Sobre mí',    href: '#sobre-mi' },
+    { label: 'Testimonios', href: '#testimonios' },
+    { label: 'Visítanos',   href: '#visitanos' },
+  ];
+
+  const close = () => setOpen(false);
+
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-4 flex justify-between items-center transition-all duration-300 ${scrolled ? 'header-scrolled' : ''}`}>
+    <>
+      <header className={`fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-4 flex justify-between items-center transition-all duration-300 ${scrolled || open ? 'header-scrolled' : ''}`}>
 
-      {/* Logo + tagline + paw prints */}
-      <a href="#" aria-label="+ que mascotas" style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 4 }}>
-        <img
-          src="https://res.cloudinary.com/ds7shn66t/image/upload/v1778608400/logomascota_cc9s82.jpg"
-          alt="+ que mascotas"
-          style={{ height: 42, width: 'auto', objectFit: 'contain', borderRadius: 8, display: 'block' }}
-        />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{
-            fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
-            color: 'rgba(255,255,255,0.8)', fontFamily: "'Nunito', sans-serif", whiteSpace: 'nowrap',
-          }}>
-            + que mascotas
-          </span>
-          {/* Two paw prints diagonal */}
-          <div style={{ position: 'relative', width: 28, height: 16, flexShrink: 0 }}>
-            <span style={{ position: 'absolute', top: 0, right: 0, color: 'rgba(255,220,120,0.75)' }}>
-              <PawIcon size={11} />
+        {/* Logo + tagline + paw prints */}
+        <a href="#" aria-label="+ que mascotas" onClick={close} style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 4 }}>
+          <img
+            src="https://res.cloudinary.com/ds7shn66t/image/upload/v1778608400/logomascota_cc9s82.jpg"
+            alt="+ que mascotas"
+            style={{ height: 42, width: 'auto', objectFit: 'contain', borderRadius: 8, display: 'block' }}
+          />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{
+              fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.8)', fontFamily: "'Nunito', sans-serif", whiteSpace: 'nowrap',
+            }}>
+              + que mascotas
             </span>
-            <span style={{ position: 'absolute', bottom: 0, left: 0, color: 'rgba(255,220,120,0.45)' }}>
-              <PawIcon size={9} />
-            </span>
+            <div style={{ position: 'relative', width: 28, height: 16, flexShrink: 0 }}>
+              <span style={{ position: 'absolute', top: 0, right: 0, color: 'rgba(255,220,120,0.75)' }}>
+                <PawIcon size={11} />
+              </span>
+              <span style={{ position: 'absolute', bottom: 0, left: 0, color: 'rgba(255,220,120,0.45)' }}>
+                <PawIcon size={9} />
+              </span>
+            </div>
           </div>
-        </div>
-      </a>
+        </a>
 
-      {/* Nav */}
-      <nav className="liquid-glass rounded-full px-2 py-2 flex items-center gap-1">
-        <a href="#sobre-mi"    className="nav-link">Sobre mí</a>
-        <a href="#testimonios" className="nav-link">Testimonios</a>
-        <a href="#visitanos"   className="nav-link">Visítanos</a>
-      </nav>
+        {/* Nav — solo escritorio */}
+        <nav className="hidden md:flex liquid-glass rounded-full px-2 py-2 items-center gap-1">
+          {navLinks.map(l => (
+            <a key={l.label} href={l.href} className="nav-link">{l.label}</a>
+          ))}
+        </nav>
 
-      {/* CTA */}
-      <a
-        href="https://wa.me/34616172791"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="liquid-glass visit-link hidden md:block"
+        {/* CTA — solo escritorio */}
+        <a
+          href="https://wa.me/34616172791"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="liquid-glass visit-link hidden md:block"
+        >
+          Contactar
+        </a>
+
+        {/* Hamburger — solo móvil */}
+        <button
+          onClick={() => setOpen(o => !o)}
+          aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
+          className="md:hidden"
+          style={{
+            background: 'rgba(255,255,255,0.08)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            borderRadius: 10,
+            width: 42, height: 42,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', color: '#fff', flexShrink: 0,
+          }}
+        >
+          {open ? (
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          )}
+        </button>
+      </header>
+
+      {/* ── Menú móvil (pantalla completa) ── */}
+      <div
+        className="md:hidden fixed inset-0 z-40 flex flex-col"
+        style={{
+          background: 'rgba(12,8,2,0.97)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          opacity: open ? 1 : 0,
+          pointerEvents: open ? 'all' : 'none',
+          transition: 'opacity 300ms ease',
+        }}
       >
-        Contactar
-      </a>
-    </header>
+        {/* Links centrados */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4, paddingTop: 80 }}>
+          {navLinks.map((l, i) => (
+            <a
+              key={l.label}
+              href={l.href}
+              onClick={close}
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: 'clamp(34px, 9vw, 46px)',
+                fontWeight: 400,
+                color: '#fff',
+                textDecoration: 'none',
+                padding: '14px 40px',
+                letterSpacing: '-0.01em',
+                opacity: open ? 1 : 0,
+                transform: open ? 'translateY(0)' : 'translateY(20px)',
+                transition: `opacity 380ms ease ${i * 70 + 100}ms, transform 380ms cubic-bezier(.2,.7,.2,1) ${i * 70 + 100}ms`,
+              }}
+            >
+              {l.label}
+            </a>
+          ))}
+        </div>
+
+        {/* Zona inferior: WhatsApp + redes + dirección */}
+        <div style={{
+          padding: '28px 32px 52px',
+          borderTop: '1px solid rgba(255,255,255,0.07)',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20,
+          opacity: open ? 1 : 0,
+          transition: 'opacity 380ms ease 280ms',
+        }}>
+          <a
+            href="https://wa.me/34616172791"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={close}
+            style={{
+              background: '#25D366', color: '#fff', fontSize: 14, fontWeight: 700,
+              fontFamily: "'Nunito', sans-serif", borderRadius: 9999,
+              padding: '14px 28px', textDecoration: 'none',
+              display: 'inline-flex', alignItems: 'center', gap: 10,
+            }}
+          >
+            <WhatsAppGlyph size={20} />
+            Contactar por WhatsApp
+          </a>
+
+          <div style={{ display: 'flex', gap: 28 }}>
+            <a href="https://www.instagram.com/masquemascotas.ceuta/" target="_blank" rel="noopener noreferrer"
+              className="social-link" onClick={close} aria-label="Instagram">
+              <InstagramIcon />
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61558810335910" target="_blank" rel="noopener noreferrer"
+              className="social-link" onClick={close} aria-label="Facebook">
+              <FacebookIcon />
+            </a>
+          </div>
+
+          <p style={{ margin: 0, fontSize: 11, color: 'rgba(255,255,255,0.28)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+            Calle Camoens 4 · Ceuta
+          </p>
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -818,7 +961,7 @@ function Footer() {
   return (
     <footer style={{ background: 'radial-gradient(ellipse 70% 90% at 50% 120%, rgba(200,110,20,0.18) 0%, rgba(160,80,10,0.07) 50%, transparent 70%), #0e0b04', borderTop: '1px solid rgba(255,255,255,0.06)', padding: '52px 24px 32px' }}>
       <div style={{ maxWidth: 960, margin: '0 auto' }}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 32, marginBottom: 40 }}>
+        <div className="footer-top">
 
           {/* Logo + tagline */}
           <a href="#" aria-label="+ que mascotas" style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6 }}>
