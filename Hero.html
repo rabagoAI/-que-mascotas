@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Más que Mascotas Ceuta — Hero</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<style>
+  html, body, #root { height: 100%; }
+  body {
+    margin: 0;
+    background: #1a1208;
+    color: #fff;
+    font-family: 'Nunito', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Liquid glass utility */
+  .liquid-glass {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.12);
+    position: relative;
+    overflow: hidden;
+  }
+  .liquid-glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(180deg,
+      rgba(255, 255, 255, 0.35) 0%,
+      rgba(255, 255, 255, 0) 50%,
+      rgba(255, 255, 255, 0.2) 100%);
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Video overlay gradient */
+  .video-overlay {
+    background: linear-gradient(to bottom,
+      rgba(10, 8, 2, 0.35) 0%,
+      rgba(10, 8, 2, 0.10) 40%,
+      rgba(10, 8, 2, 0.60) 80%,
+      rgba(10, 8, 2, 0.88) 100%);
+  }
+
+  /* Hero headline */
+  .hero-headline {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    font-size: clamp(32px, 4.5vw, 58px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    text-align: center;
+  }
+  .hero-headline .line-2 {
+    color: rgba(255, 255, 255, 0.58);
+    font-style: italic;
+  }
+
+  /* Wordmark */
+  .wordmark {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #fff;
+  }
+  .wordmark sup { font-size: 10px; margin-left: 2px; opacity: 0.85; top: -0.7em; }
+
+  /* CTA button glow on hover */
+  .cta-shop {
+    transition: transform 220ms cubic-bezier(.2,.7,.2,1), box-shadow 220ms ease;
+    will-change: transform, box-shadow;
+  }
+  .cta-shop:hover {
+    transform: scale(1.04);
+    box-shadow: 0 0 28px 4px rgba(255, 220, 120, 0.25);
+  }
+  .cta-shop:active {
+    transform: scale(0.97);
+  }
+
+  /* WhatsApp pulse */
+  @keyframes waPulse {
+    0%, 100% {
+      box-shadow:
+        0 4px 20px rgba(37, 211, 102, 0.5),
+        0 0 0 0 rgba(37, 211, 102, 0.3);
+    }
+    50% {
+      box-shadow:
+        0 4px 20px rgba(37, 211, 102, 0.5),
+        0 0 0 12px rgba(37, 211, 102, 0);
+    }
+  }
+  .wa-fab {
+    animation: waPulse 2.2s ease-in-out infinite;
+  }
+  .wa-tooltip {
+    opacity: 0;
+    transform: translateX(6px);
+    pointer-events: none;
+    transition: opacity 180ms ease, transform 180ms ease;
+  }
+  .wa-wrap:hover .wa-tooltip {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Mount fade for hero / bottom */
+  .mount-fade {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 1000ms ease, transform 1000ms cubic-bezier(.2,.7,.2,1);
+  }
+  .mount-fade.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .delay-300 { transition-delay: 300ms; }
+
+  /* Nav link */
+  .nav-link {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.9);
+    padding: 6px 16px;
+    border-radius: 9999px;
+    transition: color 200ms ease, background-color 200ms ease;
+    text-transform: uppercase;
+  }
+  .nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
+
+  .visit-link {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    transition: color 200ms ease;
+  }
+  .visit-link:hover { color: #fff; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+const { useEffect, useRef, useState } = React;
+
+/* Inline icons (lucide-style stroke) */
+const MapPinIcon = ({ size = 13, strokeWidth = 1.5, className = "" }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size} height={size} viewBox="0 0 24 24"
+    fill="none" stroke="currentColor"
+    strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+    <circle cx="12" cy="10" r="3" />
+  </svg>
+);
+
+const WhatsAppGlyph = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+    <path d="M19.11 17.46c-.27-.13-1.59-.78-1.84-.87-.25-.09-.43-.13-.61.14-.18.27-.7.87-.86 1.05-.16.18-.32.2-.59.07-.27-.14-1.13-.42-2.15-1.33-.79-.71-1.33-1.58-1.48-1.85-.16-.27-.02-.42.11-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.04-.34-.02-.48-.07-.13-.61-1.47-.83-2.01-.22-.53-.45-.46-.61-.47l-.52-.01c-.18 0-.48.07-.73.34-.25.27-.96.93-.96 2.27 0 1.34.98 2.64 1.12 2.82.14.18 1.94 2.96 4.7 4.15.66.28 1.17.45 1.57.58.66.21 1.26.18 1.74.11.53-.08 1.59-.65 1.81-1.27.22-.62.22-1.16.16-1.27-.07-.11-.25-.18-.52-.32zM16.02 5.33c-5.9 0-10.7 4.79-10.7 10.69 0 1.89.49 3.73 1.43 5.35l-1.52 5.55 5.69-1.49a10.65 10.65 0 0 0 5.1 1.3h.01c5.9 0 10.7-4.79 10.7-10.69 0-2.86-1.11-5.55-3.13-7.57a10.62 10.62 0 0 0-7.58-3.14zm0 19.51h-.01a8.9 8.9 0 0 1-4.53-1.24l-.32-.19-3.38.89.9-3.29-.21-.34a8.82 8.82 0 0 1-1.36-4.72c0-4.9 4-8.89 8.92-8.89 2.38 0 4.62.93 6.3 2.61a8.84 8.84 0 0 1 2.6 6.29c0 4.9-4 8.88-8.91 8.88z"/>
+  </svg>
+);
+
+function Hero() {
+  const videoBgRef = useRef(null);
+  const videoRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
+
+  // Mount fade-in
+  useEffect(() => {
+    const t = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(t);
+  }, []);
+
+  // Mouse parallax
+  useEffect(() => {
+    const el = videoBgRef.current;
+    if (!el || typeof gsap === "undefined") return;
+
+    let targetX = 0, targetY = 0;
+    let currentX = 0, currentY = 0;
+    let rafId = 0;
+
+    const onMove = (e) => {
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      targetX = ((e.clientX - cx) / cx) * 20;
+      targetY = ((e.clientY - cy) / cy) * 20;
+    };
+
+    const tick = () => {
+      currentX += (targetX - currentX) * 0.06;
+      currentY += (targetY - currentY) * 0.06;
+      gsap.set(el, { x: currentX, y: currentY });
+      rafId = requestAnimationFrame(tick);
+    };
+
+    window.addEventListener("mousemove", onMove);
+    rafId = requestAnimationFrame(tick);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
+
+  const onLoadedMetadata = () => {
+    if (videoRef.current) videoRef.current.playbackRate = 1.25;
+  };
+
+  return (
+    <div className="min-h-screen bg-[#1a1208] text-white overflow-x-hidden relative">
+      {/* Video background (fixed, full screen, z-0) */}
+      <div
+        ref={videoBgRef}
+        className="fixed inset-0 z-0 scale-[1.08] origin-center"
+        style={{ willChange: "transform" }}
+      >
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          onLoadedMetadata={onLoadedMetadata}
+          className="absolute inset-0 w-full h-full object-cover"
+          src="https://res.cloudinary.com/ds7shn66t/video/upload/v1778607299/video_mas_que_mascotas_jhgcwy.mp4"
+        />
+      </div>
+
+      {/* Overlay */}
+      <div className="fixed inset-0 z-10 video-overlay pointer-events-none" />
+
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 px-10 py-7 flex justify-between items-center">
+        <a href="#" className="wordmark whitespace-nowrap">
+          Más que Mascotas<sup>®</sup>
+        </a>
+
+        <nav className="liquid-glass rounded-full px-2 py-2 flex items-center gap-1">
+          <a href="#productos" className="nav-link">Productos</a>
+          <a href="#alimentacion" className="nav-link">Alimentación</a>
+          <a href="#accesorios" className="nav-link">Accesorios</a>
+          <a href="#contacto" className="nav-link">Contacto</a>
+        </nav>
+
+        <a href="#visitanos" className="liquid-glass visit-link">Visítanos</a>
+      </header>
+
+      {/* Hero headline */}
+      <div
+        className={`fixed left-1/2 z-20 mount-fade ${mounted ? "in" : ""}`}
+        style={{ top: 110, transform: "translateX(-50%)" }}
+      >
+        <h1 className="hero-headline" style={{ transform: "none" }}>
+          <span className="block">Alimentación que nace del amor.</span>
+          <span className="block line-2">Natural, cercana y pensada para ellos.</span>
+        </h1>
+      </div>
+
+      {/* Bottom block */}
+      <div
+        className={`fixed bottom-12 left-1/2 z-20 flex flex-col items-center gap-4 mount-fade delay-300 ${mounted ? "in" : ""}`}
+        style={{ transform: "translateX(-50%)" }}
+      >
+        <p
+          className="text-center"
+          style={{
+            maxWidth: 520,
+            fontSize: 14,
+            lineHeight: 1.65,
+          }}
+        >
+          <span style={{ color: "#fff" }}>
+            En Más que Mascotas Ceuta encontrarás lo mejor para tu compañero —
+          </span>
+          <span style={{ color: "rgba(255,255,255,0.5)" }}>
+            {" "}seleccionado con criterio, entregado con cariño.
+          </span>
+        </p>
+
+        <button
+          type="button"
+          className="cta-shop"
+          style={{
+            background: "#fff",
+            color: "#1a1208",
+            fontSize: 14,
+            fontWeight: 700,
+            fontFamily: "'Nunito', sans-serif",
+            borderRadius: 9999,
+            padding: "14px 32px",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          Descubre nuestra tienda
+        </button>
+
+        <div
+          className="flex items-center gap-2"
+          style={{
+            fontSize: 10,
+            fontWeight: 600,
+            letterSpacing: "0.14em",
+            color: "rgba(255,255,255,0.55)",
+            textTransform: "uppercase",
+          }}
+        >
+          <MapPinIcon size={13} strokeWidth={1.5} />
+          <span>Calle Camoens 4 · Ceuta · 616 17 27 91</span>
+        </div>
+      </div>
+
+      {/* WhatsApp floating button */}
+      <div className="fixed z-50 wa-wrap" style={{ bottom: 24, right: 24 }}>
+        <span
+          className="wa-tooltip absolute"
+          style={{
+            right: 64,
+            top: "50%",
+            transform: "translateY(-50%)",
+            background: "rgba(20, 16, 8, 0.92)",
+            color: "#fff",
+            padding: "6px 12px",
+            borderRadius: 9999,
+            fontSize: 12,
+            fontWeight: 600,
+            whiteSpace: "nowrap",
+            border: "1px solid rgba(255,255,255,0.08)",
+          }}
+        >
+          ¡Escríbenos!
+        </span>
+        <a
+          href="https://wa.me/34616172791"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="WhatsApp"
+          className="wa-fab flex items-center justify-center"
+          style={{
+            width: 52,
+            height: 52,
+            background: "#25D366",
+            borderRadius: "50%",
+            color: "#fff",
+            textDecoration: "none",
+          }}
+        >
+          <WhatsAppGlyph />
+        </a>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Hero />);
+</script>
+</body>
+</html>

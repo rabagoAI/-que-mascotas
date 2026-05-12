@@ -1,0 +1,915 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>+ que mascotas · Ceuta</title>
+<meta name="description" content="Tienda de alimentación natural y accesorios para mascotas en Ceuta. Te asesoramos con cariño y criterio." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: #1a1208;
+    color: #fff;
+    font-family: 'Nunito', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Liquid glass */
+  .liquid-glass {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.12);
+    position: relative;
+    overflow: hidden;
+  }
+  .liquid-glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(180deg,
+      rgba(255,255,255,0.35) 0%,
+      rgba(255,255,255,0) 50%,
+      rgba(255,255,255,0.2) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Header scrolled */
+  .header-scrolled {
+    background: rgba(26,18,8,0.9) !important;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+
+  /* Video overlay */
+  .video-overlay {
+    background: linear-gradient(to bottom,
+      rgba(10,8,2,0.35) 0%,
+      rgba(10,8,2,0.10) 40%,
+      rgba(10,8,2,0.65) 80%,
+      rgba(10,8,2,0.92) 100%);
+  }
+
+  /* Hero section */
+  .hero-section {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Hero headline */
+  .hero-headline {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    font-size: clamp(30px, 4.2vw, 56px);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+  }
+  .hero-headline .line-2 {
+    color: rgba(255,255,255,0.55);
+    font-style: italic;
+  }
+
+  /* Section headings */
+  .section-heading {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    font-size: clamp(26px, 3.2vw, 44px);
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+  }
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,220,120,0.7);
+  }
+
+  /* Nav links */
+  .nav-link {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.9);
+    padding: 6px 16px;
+    border-radius: 9999px;
+    transition: color 200ms ease, background-color 200ms ease;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
+
+  .visit-link {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.9);
+    padding: 10px 20px;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    transition: color 200ms ease;
+    text-decoration: none;
+  }
+  .visit-link:hover { color: #fff; }
+
+  /* CTA button */
+  .cta-btn {
+    transition: transform 220ms cubic-bezier(.2,.7,.2,1), box-shadow 220ms ease;
+    will-change: transform, box-shadow;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .cta-btn:hover {
+    transform: scale(1.04);
+    box-shadow: 0 0 28px 4px rgba(255,220,120,0.22);
+  }
+  .cta-btn:active { transform: scale(0.97); }
+
+  /* Cards */
+  .feature-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 32px 24px;
+    transition: background 300ms ease, border-color 300ms ease;
+  }
+  .feature-card:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(255,255,255,0.14);
+  }
+
+  .testimonial-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Animated border cards ── */
+  @keyframes spin-card-border {
+    to { transform: rotate(360deg); }
+  }
+
+  .card-border-wrap {
+    position: relative;
+    padding: 1px;
+    overflow: hidden;
+  }
+  .card-border-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -100%;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      transparent 255deg,
+      rgba(255,220,120,0.0) 270deg,
+      rgba(255,220,120,0.75) 308deg,
+      rgba(255,255,255,0.4)  328deg,
+      rgba(255,220,120,0.75) 348deg,
+      rgba(255,220,120,0.0)  360deg
+    );
+    animation: spin-card-border 7s linear infinite;
+  }
+  /* Escalonado para que la luz no aparezca en todas a la vez */
+  .card-border-wrap:nth-child(2)::before { animation-delay: -2.3s; }
+  .card-border-wrap:nth-child(3)::before { animation-delay: -4.6s; }
+
+  .feature-card-inner {
+    background: #1e1510;
+    border-radius: 17px;
+    padding: 32px 24px;
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    transition: background 300ms ease;
+    box-sizing: border-box;
+  }
+  .feature-card-inner:hover { background: #251a0e; }
+
+  .testimonial-card-inner {
+    background: #1e1510;
+    border-radius: 19px;
+    padding: 28px 24px;
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
+
+  /* WhatsApp FAB */
+  @keyframes waPulse {
+    0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.5), 0 0 0 0 rgba(37,211,102,0.3); }
+    50%       { box-shadow: 0 4px 20px rgba(37,211,102,0.5), 0 0 0 12px rgba(37,211,102,0); }
+  }
+  .wa-fab { animation: waPulse 2.2s ease-in-out infinite; }
+  .wa-tooltip {
+    opacity: 0;
+    transform: translateX(6px);
+    pointer-events: none;
+    transition: opacity 180ms ease, transform 180ms ease;
+  }
+  .wa-wrap:hover .wa-tooltip { opacity: 1; transform: translateX(0); }
+
+  /* Social */
+  .social-link {
+    color: rgba(255,255,255,0.45);
+    transition: color 200ms ease, transform 200ms ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .social-link:hover { color: #fff; transform: scale(1.12); }
+
+  /* Mount fade (hero) */
+  .mount-fade {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 900ms ease, transform 900ms cubic-bezier(.2,.7,.2,1);
+  }
+  .mount-fade.in { opacity: 1; transform: translateY(0); }
+  .delay-200 { transition-delay: 200ms; }
+
+  /* Scroll-triggered fade */
+  .scroll-fade {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 800ms ease, transform 800ms cubic-bezier(.2,.7,.2,1);
+  }
+  .scroll-fade.visible { opacity: 1; transform: translateY(0); }
+
+  /* Scroll indicator */
+  @keyframes scrollBounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.35; }
+    50%       { transform: translateX(-50%) translateY(6px); opacity: 0.18; }
+  }
+  .scroll-indicator { animation: scrollBounce 2s ease-in-out infinite; }
+
+  /* Map iframe */
+  .map-iframe { width: 100%; height: 380px; border: none; display: block; }
+
+  /* Footer link */
+  .footer-link {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    transition: color 200ms ease;
+  }
+  .footer-link:hover { color: rgba(255,255,255,0.85); }
+
+  /* Google icon badge */
+  .google-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.35);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+const { useEffect, useRef, useState } = React;
+
+/* ── Scroll-triggered fade-in hook ── */
+function useScrollFade() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { el.classList.add('visible'); io.disconnect(); } },
+      { threshold: 0.1 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return ref;
+}
+
+/* ── Icons ── */
+const MapPinIcon = ({ size = 14, sw = 1.5 }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+    <circle cx="12" cy="10" r="3"/>
+  </svg>
+);
+
+const PhoneIcon = ({ size = 14, sw = 1.5 }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6l1.06-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+  </svg>
+);
+
+const ClockIcon = ({ size = 14, sw = 1.5 }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="10"/>
+    <polyline points="12 6 12 12 16 14"/>
+  </svg>
+);
+
+const WhatsAppGlyph = ({ size = 24 }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+    <path d="M19.11 17.46c-.27-.13-1.59-.78-1.84-.87-.25-.09-.43-.13-.61.14-.18.27-.7.87-.86 1.05-.16.18-.32.2-.59.07-.27-.14-1.13-.42-2.15-1.33-.79-.71-1.33-1.58-1.48-1.85-.16-.27-.02-.42.11-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.04-.34-.02-.48-.07-.13-.61-1.47-.83-2.01-.22-.53-.45-.46-.61-.47l-.52-.01c-.18 0-.48.07-.73.34-.25.27-.96.93-.96 2.27 0 1.34.98 2.64 1.12 2.82.14.18 1.94 2.96 4.7 4.15.66.28 1.17.45 1.57.58.66.21 1.26.18 1.74.11.53-.08 1.59-.65 1.81-1.27.22-.62.22-1.16.16-1.27-.07-.11-.25-.18-.52-.32zM16.02 5.33c-5.9 0-10.7 4.79-10.7 10.69 0 1.89.49 3.73 1.43 5.35l-1.52 5.55 5.69-1.49a10.65 10.65 0 0 0 5.1 1.3h.01c5.9 0 10.7-4.79 10.7-10.69 0-2.86-1.11-5.55-3.13-7.57a10.62 10.62 0 0 0-7.58-3.14zm0 19.51h-.01a8.9 8.9 0 0 1-4.53-1.24l-.32-.19-3.38.89.9-3.29-.21-.34a8.82 8.82 0 0 1-1.36-4.72c0-4.9 4-8.89 8.92-8.89 2.38 0 4.62.93 6.3 2.61a8.84 8.84 0 0 1 2.6 6.29c0 4.9-4 8.88-8.91 8.88z"/>
+  </svg>
+);
+
+const InstagramIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+  </svg>
+);
+
+const FacebookIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+  </svg>
+);
+
+const PawIcon = ({ size = 24 }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24"
+    fill="currentColor" aria-hidden="true">
+    <ellipse cx="6" cy="7.5" rx="2" ry="2.5"/>
+    <ellipse cx="10.5" cy="5" rx="1.8" ry="2.2"/>
+    <ellipse cx="15" cy="5.5" rx="1.8" ry="2.2"/>
+    <ellipse cx="18.5" cy="8" rx="2" ry="2.5"/>
+    <path d="M12 10.5c-3.5 0-7 2.5-7 5.5 0 2 1.5 3 3.5 3 1 0 2-.5 3.5-.5s2.5.5 3.5.5c2 0 3.5-1 3.5-3 0-3-3.5-5.5-7-5.5z"/>
+  </svg>
+);
+
+const StarIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+    fill="#F59E0B" stroke="#F59E0B" strokeWidth="0.5" aria-hidden="true">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+  </svg>
+);
+
+const ChevronDownIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <polyline points="6 9 12 15 18 9"/>
+  </svg>
+);
+
+/* Google colored "G" icon */
+const GoogleIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 48 48" aria-hidden="true">
+    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+  </svg>
+);
+
+/* ══════════════════════════════════════
+   HEADER
+══════════════════════════════════════ */
+function Header() {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', fn, { passive: true });
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
+
+  return (
+    <header className={`fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-4 flex justify-between items-center transition-all duration-300 ${scrolled ? 'header-scrolled' : ''}`}>
+
+      {/* Logo + tagline + paw prints */}
+      <a href="#" aria-label="+ que mascotas" style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 4 }}>
+        <img
+          src="https://res.cloudinary.com/ds7shn66t/image/upload/v1778608400/logomascota_cc9s82.jpg"
+          alt="+ que mascotas"
+          style={{ height: 42, width: 'auto', objectFit: 'contain', borderRadius: 8, display: 'block' }}
+        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{
+            fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.8)', fontFamily: "'Nunito', sans-serif", whiteSpace: 'nowrap',
+          }}>
+            + que mascotas
+          </span>
+          {/* Two paw prints diagonal */}
+          <div style={{ position: 'relative', width: 28, height: 16, flexShrink: 0 }}>
+            <span style={{ position: 'absolute', top: 0, right: 0, color: 'rgba(255,220,120,0.75)' }}>
+              <PawIcon size={11} />
+            </span>
+            <span style={{ position: 'absolute', bottom: 0, left: 0, color: 'rgba(255,220,120,0.45)' }}>
+              <PawIcon size={9} />
+            </span>
+          </div>
+        </div>
+      </a>
+
+      {/* Nav */}
+      <nav className="liquid-glass rounded-full px-2 py-2 flex items-center gap-1">
+        <a href="#sobre-mi"    className="nav-link">Sobre mí</a>
+        <a href="#testimonios" className="nav-link">Testimonios</a>
+        <a href="#visitanos"   className="nav-link">Visítanos</a>
+      </nav>
+
+      {/* CTA */}
+      <a
+        href="https://wa.me/34616172791"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="liquid-glass visit-link hidden md:block"
+      >
+        Contactar
+      </a>
+    </header>
+  );
+}
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+function HeroSection() {
+  const videoBgRef = useRef(null);
+  const videoRef   = useRef(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const t = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(t);
+  }, []);
+
+  useEffect(() => {
+    const el = videoBgRef.current;
+    if (!el || typeof gsap === 'undefined') return;
+    let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
+    const onMove = e => {
+      tx = ((e.clientX - window.innerWidth  / 2) / (window.innerWidth  / 2)) * 18;
+      ty = ((e.clientY - window.innerHeight / 2) / (window.innerHeight / 2)) * 18;
+    };
+    const tick = () => {
+      cx += (tx - cx) * 0.06;
+      cy += (ty - cy) * 0.06;
+      gsap.set(el, { x: cx, y: cy });
+      raf = requestAnimationFrame(tick);
+    };
+    window.addEventListener('mousemove', onMove);
+    raf = requestAnimationFrame(tick);
+    return () => { window.removeEventListener('mousemove', onMove); cancelAnimationFrame(raf); };
+  }, []);
+
+  return (
+    <section id="inicio" className="hero-section">
+      <div ref={videoBgRef} className="absolute inset-0 origin-center" style={{ transform: 'scale(1.08)', willChange: 'transform' }}>
+        <video
+          ref={videoRef}
+          autoPlay muted loop playsInline
+          onLoadedMetadata={() => { if (videoRef.current) videoRef.current.playbackRate = 1.25; }}
+          className="absolute inset-0 w-full h-full object-cover"
+          src="https://res.cloudinary.com/ds7shn66t/video/upload/v1778607299/video_mas_que_mascotas_jhgcwy.mp4"
+        />
+      </div>
+
+      <div className="absolute inset-0 video-overlay pointer-events-none" />
+
+      <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center" style={{ paddingTop: 80 }}>
+        <div className={`flex flex-col items-center gap-5 mount-fade ${mounted ? 'in' : ''}`}>
+          <h1 className="hero-headline">
+            <span className="block">Alimentación que nace del amor.</span>
+            <span className="block line-2">Natural, cercana y pensada para ellos.</span>
+          </h1>
+          <p style={{ maxWidth: 520, fontSize: 14, lineHeight: 1.7, margin: 0 }}>
+            <span>En + que mascotas Ceuta encontrarás lo mejor para tu compañero —</span>
+            <span style={{ color: 'rgba(255,255,255,0.5)' }}>{' '}seleccionado con criterio, entregado con cariño.</span>
+          </p>
+        </div>
+
+        <div className={`flex flex-col items-center gap-4 mount-fade delay-200 ${mounted ? 'in' : ''}`} style={{ marginTop: 32 }}>
+          <a href="#sobre-mi" className="cta-btn" style={{
+            background: '#fff', color: '#1a1208', fontSize: 14, fontWeight: 700,
+            fontFamily: "'Nunito', sans-serif", borderRadius: 9999, padding: '14px 32px',
+          }}>
+            Conócenos
+          </a>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, fontWeight: 600, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase' }}>
+            <MapPinIcon size={13} sw={1.5} />
+            <span>Calle Camoens 4 · Ceuta · 616 17 27 91</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="scroll-indicator absolute bottom-8 left-1/2 z-10" style={{ color: '#fff' }}>
+        <ChevronDownIcon />
+      </div>
+    </section>
+  );
+}
+
+/* ══════════════════════════════════════
+   SOBRE MÍ
+══════════════════════════════════════ */
+function SobreMiSection() {
+  const ref = useScrollFade();
+
+  const pillars = [
+    {
+      icon: <PawIcon size={30} />,
+      title: 'Productos de calidad',
+      text: 'Solo trabajo con marcas en las que confío — naturales, sin aditivos innecesarios y pensadas para el bienestar de cada animal.',
+    },
+    {
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      ),
+      title: 'Asesoramiento cercano',
+      text: 'Te escucho y te oriento según las necesidades reales de tu mascota, sin presiones y con todo el cariño del mundo.',
+    },
+    {
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/>
+          <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+        </svg>
+      ),
+      title: 'Compromiso natural',
+      text: 'Apuesto por la alimentación natural y los productos responsables porque creo que un animal bien nutrido es un animal feliz.',
+    },
+  ];
+
+  return (
+    <section id="sobre-mi" style={{ background: 'radial-gradient(ellipse 85% 65% at 110% 0%, rgba(210,120,20,0.22) 0%, rgba(180,90,15,0.08) 45%, transparent 70%), #1a1208', padding: '100px 24px' }}>
+      <div style={{ maxWidth: 960, margin: '0 auto' }}>
+        <div ref={ref} className="scroll-fade">
+          <div style={{ textAlign: 'center', marginBottom: 64 }}>
+            <span className="section-label">Sobre mí</span>
+            <h2 className="section-heading" style={{ marginTop: 12, marginBottom: 20 }}>
+              Más que una tienda,{' '}
+              <span style={{ fontStyle: 'italic', color: 'rgba(255,255,255,0.55)' }}>
+                una pasión por los animales.
+              </span>
+            </h2>
+            <p style={{ maxWidth: 620, margin: '0 auto', fontSize: 15, lineHeight: 1.8, color: 'rgba(255,255,255,0.6)' }}>
+              Soy Belén, y abrí + que mascotas en el corazón de Ceuta porque creía que las mascotas de aquí
+              se merecían algo mejor. Encontrarás productos elegidos con criterio, consejos honestos
+              y el trato cercano que solo da quien de verdad ama lo que hace.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 20 }}>
+            {pillars.map((p, i) => (
+              <div key={i} className="card-border-wrap" style={{ borderRadius: 18 }}>
+                <div className="feature-card-inner">
+                  <div style={{ color: 'rgba(255,220,120,0.8)', marginBottom: 18 }}>{p.icon}</div>
+                  <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 19, fontWeight: 400, lineHeight: 1.3, marginBottom: 12 }}>
+                    {p.title}
+                  </h3>
+                  <p style={{ fontSize: 13, lineHeight: 1.75, color: 'rgba(255,255,255,0.52)', margin: 0 }}>
+                    {p.text}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ══════════════════════════════════════
+   TESTIMONIOS (reseñas reales de Google)
+══════════════════════════════════════ */
+function TestimoniosSection() {
+  const ref = useScrollFade();
+
+  const reviews = [
+    {
+      name: 'Marcial Benítez',
+      text: 'Hacía falta una tienda diferente en Ceuta, dedicada a las mascotas, sobre todo, viendo lo que teníamos en Ceuta hasta su apertura. Local céntrico, amabilidad absoluta por parte de su valiente y emprendedora propietaria, Belén, pero sobre todo hacía falta un cambio en la variedad de piensos naturales, comida húmeda, y todo tipo de artículos dedicados a las mascotas. Importante también la gran relación calidad precio. Tienda muy recomendable.',
+    },
+    {
+      name: 'Sandra Murc.',
+      text: 'Mi enhorabuena a su propietaria, una tienda de 10 igual que su atención. Me tuve que trasladar a Ceuta durante un año con mi cachorra de 2 meses y Belén me ha ayudado muchísimo. Ahora que me vuelvo a mi ciudad no sabes cuánto voy a echar en falta tener una tienda así. ¡Un abrazo!',
+    },
+    {
+      name: 'Peleteria DUO',
+      text: 'Fuimos a visitar a un familiar a Ceuta y me recomendaron la tienda para animales. Trato muy bueno, con información y asesoramiento estupendo por parte de la dependienta. Quería seguir teniendo un pienso que compraba en mi ciudad para mi perro y allí se me acabó; me recomendó una marca que no conocía, más natural y con menos cereales. Mi perro muy contento y le noto mejor, con más energía. Recomendado 100% por producto, calidad, precio y asesoramiento.',
+    },
+  ];
+
+  return (
+    <section id="testimonios" style={{ background: 'radial-gradient(ellipse 75% 70% at -10% 65%, rgba(200,110,20,0.20) 0%, rgba(170,85,12,0.07) 45%, transparent 68%), #120e04', padding: '100px 24px' }}>
+      <div style={{ maxWidth: 960, margin: '0 auto' }}>
+        <div ref={ref} className="scroll-fade">
+          <div style={{ textAlign: 'center', marginBottom: 56 }}>
+            <span className="section-label">Testimonios</span>
+            <h2 className="section-heading" style={{ marginTop: 12 }}>
+              Lo que dicen nuestros clientes
+            </h2>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: 20 }}>
+            {reviews.map((r, i) => (
+              <div key={i} className="card-border-wrap" style={{ borderRadius: 20 }}>
+                <div className="testimonial-card-inner">
+                  {/* Google badge + stars */}
+                  <div className="google-badge">
+                    <GoogleIcon />
+                    <span>Reseña de Google</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: 3, marginBottom: 16 }}>
+                    {[0,1,2,3,4].map(j => <StarIcon key={j} />)}
+                  </div>
+                  {/* Quote */}
+                  <p style={{ fontSize: 13.5, lineHeight: 1.78, fontStyle: 'italic', color: 'rgba(255,255,255,0.72)', margin: '0 0 20px', flex: 1 }}>
+                    "{r.text}"
+                  </p>
+                  {/* Author */}
+                  <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: 16 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700 }}>{r.name}</div>
+                    <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.06em', marginTop: 3 }}>Ceuta</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ══════════════════════════════════════
+   VISÍTANOS
+══════════════════════════════════════ */
+function VisitanosSection() {
+  const ref = useScrollFade();
+
+  return (
+    <section id="visitanos" style={{ background: 'radial-gradient(ellipse 80% 60% at 105% 105%, rgba(210,120,20,0.20) 0%, rgba(180,90,15,0.07) 45%, transparent 68%), #1a1208', padding: '100px 24px' }}>
+      <div style={{ maxWidth: 960, margin: '0 auto' }}>
+        <div ref={ref} className="scroll-fade">
+          <div style={{ textAlign: 'center', marginBottom: 56 }}>
+            <span className="section-label">Encuéntranos</span>
+            <h2 className="section-heading" style={{ marginTop: 12 }}>
+              Visítanos en Ceuta
+            </h2>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 40, alignItems: 'start' }}>
+
+            {/* Mapa */}
+            <div style={{ borderRadius: 18, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <iframe
+                title="Ubicación + que mascotas Ceuta"
+                src="https://maps.google.com/maps?q=mas+que+mascotas+ceuta&output=embed&hl=es&z=17"
+                className="map-iframe"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+
+            {/* Info + redes + CTA */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
+
+              {/* Datos de contacto */}
+              {[
+                {
+                  icon: <MapPinIcon size={16} sw={1.5} />,
+                  label: 'Dirección',
+                  value: 'Calle Camoens 4, Ceuta',
+                  href: 'https://maps.app.goo.gl/nRP5UybwJKcYGWu28',
+                },
+                {
+                  icon: <PhoneIcon size={16} sw={1.5} />,
+                  label: 'Teléfono / WhatsApp',
+                  value: '616 17 27 91',
+                  href: 'tel:+34616172791',
+                },
+                {
+                  icon: <ClockIcon size={16} sw={1.5} />,
+                  label: 'Horario',
+                  value: 'Lun – Vie: 9:30 – 14:00 / 17:00 – 21:00\nSábado: 10:00 – 14:00',
+                  href: null,
+                },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                  <span style={{ color: 'rgba(255,220,120,0.75)', marginTop: 2, flexShrink: 0 }}>{item.icon}</span>
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', marginBottom: 4 }}>
+                      {item.label}
+                    </div>
+                    {item.href ? (
+                      <a href={item.href}
+                        target={item.href.startsWith('http') ? '_blank' : undefined}
+                        rel="noopener noreferrer"
+                        style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', textDecoration: 'none', lineHeight: 1.6 }}>
+                        {item.value}
+                      </a>
+                    ) : (
+                      <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7, whiteSpace: 'pre-line' }}>
+                        {item.value}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              <div style={{ height: 1, background: 'rgba(255,255,255,0.07)' }} />
+
+              {/* Redes sociales */}
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', marginBottom: 14 }}>
+                  Síguenos
+                </div>
+                <div style={{ display: 'flex', gap: 18 }}>
+                  <a href="https://www.instagram.com/masquemascotas.ceuta/" target="_blank" rel="noopener noreferrer"
+                    className="social-link" aria-label="Instagram">
+                    <InstagramIcon />
+                  </a>
+                  <a href="https://www.facebook.com/profile.php?id=61558810335910" target="_blank" rel="noopener noreferrer"
+                    className="social-link" aria-label="Facebook">
+                    <FacebookIcon />
+                  </a>
+                  <a href="https://wa.me/34616172791" target="_blank" rel="noopener noreferrer"
+                    className="social-link" aria-label="WhatsApp">
+                    <WhatsAppGlyph size={22} />
+                  </a>
+                </div>
+              </div>
+
+              {/* WhatsApp CTA */}
+              <a
+                href="https://wa.me/34616172791"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="cta-btn"
+                style={{
+                  background: '#25D366', color: '#fff', fontSize: 13, fontWeight: 700,
+                  fontFamily: "'Nunito', sans-serif", borderRadius: 9999,
+                  padding: '13px 26px', alignSelf: 'flex-start',
+                  display: 'inline-flex', alignItems: 'center', gap: 10,
+                }}
+              >
+                <WhatsAppGlyph size={20} />
+                Escríbenos por WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+function Footer() {
+  const year = new Date().getFullYear();
+  const navLinks = [
+    { label: 'Inicio',       href: '#' },
+    { label: 'Sobre mí',     href: '#sobre-mi' },
+    { label: 'Testimonios',  href: '#testimonios' },
+    { label: 'Visítanos',    href: '#visitanos' },
+  ];
+
+  return (
+    <footer style={{ background: 'radial-gradient(ellipse 70% 90% at 50% 120%, rgba(200,110,20,0.18) 0%, rgba(160,80,10,0.07) 50%, transparent 70%), #0e0b04', borderTop: '1px solid rgba(255,255,255,0.06)', padding: '52px 24px 32px' }}>
+      <div style={{ maxWidth: 960, margin: '0 auto' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 32, marginBottom: 40 }}>
+
+          {/* Logo + tagline */}
+          <a href="#" aria-label="+ que mascotas" style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6 }}>
+            <img
+              src="https://res.cloudinary.com/ds7shn66t/image/upload/v1778608400/logomascota_cc9s82.jpg"
+              alt="+ que mascotas"
+              style={{ height: 52, width: 'auto', objectFit: 'contain', borderRadius: 8 }}
+            />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)' }}>
+                + que mascotas
+              </span>
+              <div style={{ position: 'relative', width: 28, height: 16 }}>
+                <span style={{ position: 'absolute', top: 0, right: 0, color: 'rgba(255,220,120,0.5)' }}>
+                  <PawIcon size={11} />
+                </span>
+                <span style={{ position: 'absolute', bottom: 0, left: 0, color: 'rgba(255,220,120,0.3)' }}>
+                  <PawIcon size={9} />
+                </span>
+              </div>
+            </div>
+          </a>
+
+          {/* Nav */}
+          <nav style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 24px', justifyContent: 'center' }}>
+            {navLinks.map(l => <a key={l.label} href={l.href} className="footer-link">{l.label}</a>)}
+          </nav>
+
+          {/* Social */}
+          <div style={{ display: 'flex', gap: 18, alignItems: 'center' }}>
+            <a href="https://www.instagram.com/masquemascotas.ceuta/" target="_blank" rel="noopener noreferrer"
+              className="social-link" aria-label="Instagram"><InstagramIcon /></a>
+            <a href="https://www.facebook.com/profile.php?id=61558810335910" target="_blank" rel="noopener noreferrer"
+              className="social-link" aria-label="Facebook"><FacebookIcon /></a>
+            <a href="https://wa.me/34616172791" target="_blank" rel="noopener noreferrer"
+              className="social-link" aria-label="WhatsApp"><WhatsAppGlyph size={22} /></a>
+          </div>
+        </div>
+
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 24, textAlign: 'center' }}>
+          <p style={{ margin: 0, fontSize: 11, color: 'rgba(255,255,255,0.2)', letterSpacing: '0.05em' }}>
+            © {year} + que mascotas · Calle Camoens 4, Ceuta · 616 17 27 91
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+/* ══════════════════════════════════════
+   WHATSAPP FAB
+══════════════════════════════════════ */
+function WhatsAppFAB() {
+  return (
+    <div className="fixed z-50 wa-wrap" style={{ bottom: 24, right: 24 }}>
+      <span className="wa-tooltip absolute" style={{
+        right: 64, top: '50%', transform: 'translateY(-50%)',
+        background: 'rgba(20,16,8,0.92)', color: '#fff',
+        padding: '6px 12px', borderRadius: 9999, fontSize: 12, fontWeight: 600,
+        whiteSpace: 'nowrap', border: '1px solid rgba(255,255,255,0.08)',
+      }}>
+        ¡Escríbenos!
+      </span>
+      <a href="https://wa.me/34616172791" target="_blank" rel="noopener noreferrer"
+        aria-label="Contactar por WhatsApp"
+        className="wa-fab flex items-center justify-center"
+        style={{ width: 52, height: 52, background: '#25D366', borderRadius: '50%', color: '#fff', textDecoration: 'none' }}>
+        <WhatsAppGlyph />
+      </a>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════
+   APP ROOT
+══════════════════════════════════════ */
+function App() {
+  return (
+    <div style={{ background: '#1a1208', minHeight: '100vh' }}>
+      <Header />
+      <HeroSection />
+      <SobreMiSection />
+      <TestimoniosSection />
+      <VisitanosSection />
+      <Footer />
+      <WhatsAppFAB />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
